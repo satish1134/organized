@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Package Version Monitor{% endblock %}
+
+
+{% block navbar_title %}Package Version Monitor{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid package-monitor-container">
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+    <!-- Header Section -->
+    <div class="header-section mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            
+            <div class="d-flex align-items-center">
+                <button id="refreshBtn" class="btn btn-primary me-3">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <div class="last-checked">
+                    <span class="text-muted">
+                        Last checked: <span id="lastCheckedTime">-</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Content Area -->
+        <div class="col-lg-8 col-md-12 mb-4">
+            <!-- Search Section -->
+            <div class="search-section card mb-4">
+                <div class="card-body">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="search" 
+                               id="packageSearch" 
+                               class="form-control" 
+                               placeholder="Search packages..."
+                               aria-label="Search packages">
+                    </div>
+                </div>
+            </div>
+
+            <!-- No Results Message (Initially Hidden) -->
+            <div id="noPackagesFound" class="alert alert-info text-center" style="display: none;">
+                <i class="fas fa-info-circle me-2"></i>
+                No matching packages found.
+            </div>
+
+            <!-- Package List Container -->
+            <div class="package-list">
+                <!-- Package cards will be dynamically inserted here -->
+                {% if packages %}
+                    {% for package in packages %}
+                    <div class="package-card" data-package="{{ package.name }}" data-timestamp="{{ package.last_update }}">
+                        <div class="card mb-3">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h3 class="card-title h5 mb-0">
+                                    {{ package.name }}
+                                    {% if package.has_update %}
+                                    <span class="badge bg-warning text-dark ms-2">Update Available</span>
+                                    {% endif %}
+                                </h3>
+                                <div class="package-actions">
+                                    <a href="{{ package.link }}" 
+                                       target="_blank" 
+                                       class="btn btn-sm btn-primary"
+                                       rel="noopener noreferrer">
+                                        <i class="fas fa-external-link-alt"></i> PyPI
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="version-info">
+                                            <i class="fas fa-code-branch text-primary"></i>
+                                            <strong>Version:</strong>
+                                            <span class="current-version">{{ package.version }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="version-info">
+                                            <i class="fas fa-clock text-primary"></i>
+                                            <strong>Last Updated:</strong>
+                                            <span class="last-update" data-timestamp="{{ package.last_update }}">
+                                                {{ package.last_update }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="status-info">
+                                            <i class="fas fa-info-circle text-primary"></i>
+                                            <strong>Status:</strong>
+                                            <span class="badge version-status 
+                                                {% if package.status == 'Recent' %}bg-success
+                                                {% elif package.status == 'Active' %}bg-info
+                                                {% elif package.status == 'Stable' %}bg-primary
+                                                {% else %}bg-secondary{% endif %}">
+                                                {{ package.status }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    {% if package.description %}
+                                    <div class="col-12">
+                                        <small class="text-muted package-description">{{ package.description }}</small>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted p-5">
+                        <i class="fas fa-box-open fa-3x mb-3"></i>
+                        <p>No packages available.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Notification Panel -->
+        <div class="col-lg-4 col-md-12">
+            <div class="notification-panel sticky-top">
+                <div class="card">
+                    <div class="card-header  text-blue">
+                        <h4 class="card-title h5 mb-0">
+                            <i class="fas fa-bell"></i> Recent Updates
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="notificationList">
+                            {% if notifications %}
+                                {% for notification in notifications %}
+                                <div class="alert alert-{{ notification.type }} alert-dismissible fade show">
+                                    <div class="notification-content">
+                                        <strong>{{ notification.package_name }}</strong>: 
+                                        {{ notification.message }}
+                                        <br>
+                                        <small class="text-muted notification-time" data-timestamp="{{ notification.timestamp }}">
+                                            {{ notification.timestamp }}
+                                        </small>
+                                    </div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center text-muted p-3">
+                                    <i class="fas fa-bell-slash"></i>
+                                    No notifications at this time
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="module" src="{{ url_for('static', filename='js/package.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Dashboard Application">
+    <meta name="theme-color" content="#343a40">
+    
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Base CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+
+    <!-- Page Specific CSS -->
+    {% block extra_css %}{% endblock %}
+
+    <!-- Preload Critical Resources -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+   
+    <!-- Enhanced Navigation Bar -->
+    <nav class="navbar navbar-expand-lg custom-navbar">
+        <div class="container-fluid">
+            <div class="navbar-brand-container">
+                <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
+                    <img src="{{ url_for('static', filename='image/logo.jpg') }}" alt="Logo" width="150">
+                </a>
+                <div class="brand-title">
+                    <span class="brand-text">{% block navbar_title %}Batch Monitoring{% endblock %}</span>
+                    <div class="brand-underline"></div>
+                </div>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'dashboard.index' %}active{% endif %}" 
+                           href="{{ url_for('dashboard.index') }}">
+                            <i class="fas fa-home"></i> EDAP
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'dashboard.package_parser' %}active{% endif %}" 
+                           href="{{ url_for('dashboard.package_parser') }}">
+                            <i class="fas fa-box"></i> Python Library
+                        </a>
+                    </li>
+                    {% if request.endpoint == 'dashboard.index' %}
+                    <li class="nav-item">
+                        <span class="nav-link">
+                            <i class="fas fa-clock"></i> Last Updated: 
+                            <span id="lastRefreshTime"></span>
+                        </span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Enhanced Loading Indicator -->
+    <div id="loadingIndicator" class="loading-overlay d-none">
+        <div class="loading-content">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="loading-text mt-2">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="container-fluid mt-4">
+        <!-- Enhanced Notification Area -->
+        <div class="notification-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} me-2"></i>
+                                <div class="flex-grow-1">{{ message }}</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Page Content -->
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3">
+        <div class="container text-center">
+            <span class="text-light">
+                © 2024 <img src="{{ url_for('static', filename='image/logo.jpg') }}" alt="Logo" class="footer-logo">
+            </span>
+        </div>
+    </footer>
+
+    <!-- Core JavaScript -->
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
+    
+    <!-- Base JavaScript -->
+    <script src="{{ url_for('static', filename='js/base.js') }}" type="module"></script>
+
+    <!-- Page Specific JavaScript -->
+    {% block extra_scripts %}{% endblock %}
+
+</body>
+</html>
