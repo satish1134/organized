@@ -40,8 +40,9 @@ def create_app(config_class=Config):
         package_logger.addHandler(file_handler)
     
     # Register blueprints
-    from app.routes import dashboard, package
+    from app.routes import dashboard, package, trend
     app.register_blueprint(dashboard.bp)
     app.register_blueprint(package.bp, url_prefix='/package')
+    app.register_blueprint(trend.bp, url_prefix='/trend')
 
     return app

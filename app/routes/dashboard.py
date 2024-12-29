@@ -104,6 +104,16 @@ def package_parser():
                              error_title='Package Parser Error',
                              error='Failed to load package parser'), 500
 
+@bp.route('/trend-analysis', endpoint='trend')
+def trend():
+    try:
+        return render_template('trend.html')
+    except Exception as e:
+        current_app.logger.error(f"Error loading trend analysis: {str(e)}", exc_info=True)
+        return render_template('error.html',
+                               error_title='Trend Analysis Error',
+                               error='Failed to load trend analysis'), 500
+
 # Error handlers
 @bp.errorhandler(404)
 def not_found_error(error):

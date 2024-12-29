@@ -63,6 +63,12 @@
                             <i class="fas fa-box"></i> Python Library
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'dashboard.trend' %}active{% endif %}" 
+                           href="{{ url_for('trend.trend') }}">
+                            <i class="fas fa-chart-line"></i> Trend Analysis
+                        </a>
+                    </li>
                     {% if request.endpoint == 'dashboard.index' %}
                     <li class="nav-item">
                         <span class="nav-link">

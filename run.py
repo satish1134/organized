@@ -1,12 +1,13 @@
 from flask import Flask
 from app.routes.dashboard import bp as dashboard_bp
-from app.routes.package import package_bp  # Added import for package blueprint
+from app.routes.package import package_bp
+from app.routes.trend import bp as trend_bp, layout, register_callbacks, index_string
 from app.utils.cache import init_cache
 import os
 import logging
 from logging.handlers import RotatingFileHandler
 from config import MONITORED_PACKAGES
-
+from dash import Dash
 
 # Configure logging
 def setup_logging(app):
@@ -65,14 +66,25 @@ def create_app():
     
     app.register_blueprint(package_bp)
     app.logger.info('Package blueprint registered with prefix /package')
+
+    app.register_blueprint(trend_bp)
+    app.logger.info('Trend blueprint registered with prefix /trend')
     
     # Register error handlers
     register_error_handlers(app)
     
+    # Initialize Dash app
+    app.logger.info('Initializing Dash app...')
+    dash_app = Dash(__name__, server=app, url_base_pathname='/trend/dash/')
+    dash_app.layout = layout
+    dash_app.index_string = index_string
+    register_callbacks(dash_app)
+    app.logger.info('Dash app initialized')
+    
     # Log available routes
     app.logger.info('Registered routes:')
     for rule in app.url_map.iter_rules():
-        app.logger.info(f'Route: {rule.rule} - Methods: {rule.methods}')
+        app.logger.info(f'Route: {rule.rule} - Endpoint: {rule.endpoint} - Methods: {rule.methods}')
     
     return app
 
