@@ -18,7 +18,16 @@ index_string = '''
     <head>
         {%metas%}
         <title>Trend Analysis</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         {%css%}
+        <style>
+            body {
+                font-family: 'Inter', sans-serif;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
     </head>
     <body>
         {%app_entry%}
@@ -94,42 +103,57 @@ thresholds = {
     'west': 21 + 0/60  # 21:00
 }
 
-# Define the layout
 layout = html.Div(className='main-container', children=[
-    html.Div(className='dropdown-container', children=[
+    # Dropdowns Container
+    html.Div(className='dropdown-container backdrop-blur-sm bg-white/80 rounded-xl shadow-lg p-4 border border-blue-100', children=[
         html.Div([
-            html.Label('Select Application:', 
-                      style={'fontSize': '14px', 'fontWeight': 'bold', 'color': '#51504f'}),
-            dcc.Dropdown(
-                id='app-dropdown',
-                options=[{'label': 'All Applications', 'value': 'all'}] +
-                        [{'label': app, 'value': app} for app in df['application_name'].unique()],
-                value='all',
-                clearable=False
+            html.Label(
+                'Select Application:', 
+                className='block text-sm font-semibold text-gray-700 mb-2'
+            ),
+            html.Div(
+                dcc.Dropdown(
+                    id='app-dropdown',
+                    options=[{'label': 'All Applications', 'value': 'all'}] +
+                            [{'label': app, 'value': app} for app in df['application_name'].unique()],
+                    value='all',
+                    clearable=False,
+                    className='dash-dropdown'
+                ),
+                className='relative'
             )
-        ], style={'width': '48%', 'display': 'inline-block'}),
+        ], className='w-[48%] inline-block'),
         
         html.Div([
-            html.Label('Select DAG:', 
-                      style={'fontSize': '14px', 'fontWeight': 'bold', 'color': '#51504f'}),
-            dcc.Dropdown(
-                id='dag-dropdown',
-                options=[],
-                clearable=False
+            html.Label(
+                'Select DAG:', 
+                className='block text-sm font-semibold text-gray-700 mb-2'
+            ),
+            html.Div(
+                dcc.Dropdown(
+                    id='dag-dropdown',
+                    options=[],
+                    clearable=False,
+                    className='dash-dropdown'
+                ),
+                className='relative'
             )
-        ], style={'width': '48%', 'display': 'inline-block', 'marginLeft': '4%', 'visibility': 'hidden'},
-           id='dag-dropdown-container')
+        ], 
+        className='w-[48%] inline-block ml-[4%]',
+        id='dag-dropdown-container',
+        style={'visibility': 'hidden'})
     ]),
     
-    html.Div(className='graph-container', children=[
+    # Graph Container
+    html.Div(className='graph-container backdrop-blur-sm bg-white/80 rounded-xl shadow-lg p-4 border border-blue-100', children=[
         dcc.Graph(
             id='time-series-graph',
             config={
                 'displayModeBar': True,
                 'displaylogo': False,
-                'modeBarButtonsToRemove': ['lasso2d', 'select2d']
-            },
-            style={'height': 'calc(100vh - 150px)'}
+                'modeBarButtonsToRemove': ['lasso2d', 'select2d'],
+                'responsive': True
+            }
         )
     ])
 ])
@@ -175,7 +199,12 @@ def register_callbacks(app: Dash) -> None:
         )
         def update_dag_dropdown(selected_app: str) -> tuple:
             """Update DAG dropdown based on selected application"""
-            base_style = {'width': '48%', 'display': 'inline-block', 'marginLeft': '4%'}
+            base_style = {
+                'width': '48%',
+                'display': 'inline-block',
+                'marginLeft': '4%',
+                'transition': 'visibility 0.3s ease-in-out'
+            }
             
             if selected_app == 'all':
                 return [], {**base_style, 'visibility': 'hidden'}

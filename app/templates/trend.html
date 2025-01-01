@@ -9,13 +9,13 @@
     <div class="trend-container">
         <div class="row g-0">
             <div class="col-12">
-                <div class="trend-content animate__animated animate__fadeInUp">
-                    <div class="card">
+                <div class="trend-content animate__animated animate__fadeIn">
+                    <div class="card border-0">
                         <div class="card-body p-0">
                             <iframe 
                                 src="/trend/dash/"
                                 id="trend-frame"
-                                class="trend-iframe"
+                                class="trend-iframe w-full"
                                 frameborder="0"
                             ></iframe>
                         </div>
@@ -28,6 +28,7 @@
 {% endblock %}
 
 {% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/trend.css') }}">
 {% endblock %}
