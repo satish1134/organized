@@ -107,12 +107,14 @@ def package_parser():
 @bp.route('/trend-analysis', endpoint='trend')
 def trend():
     try:
+        current_app.logger.info('Rendering trend.html...')
         return render_template('trend.html')
     except Exception as e:
         current_app.logger.error(f"Error loading trend analysis: {str(e)}", exc_info=True)
         return render_template('error.html',
-                               error_title='Trend Analysis Error',
-                               error='Failed to load trend analysis'), 500
+                             error_title='Trend Analysis Error',
+                             error='Failed to load trend analysis'), 500
+
 
 # Error handlers
 @bp.errorhandler(404)

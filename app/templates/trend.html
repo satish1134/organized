@@ -5,33 +5,33 @@
 {% block navbar_title %}Batch Trend{% endblock %}
 
 {% block content %}
-    <div class="container mt-5">
-        <div class="trend-container">
-            <h1 class="text-center mb-4 animate__animated animate__fadeInDown">Trend Analysis</h1>
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="trend-chart" class="mb-4"></div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <iframe src="/trend/dash/" width="100%" height="800px" style="border:none;" class="animate__animated animate__fadeInUp"></iframe>
+<div class="container-fluid p-0">
+    <div class="trend-container">
+        <div class="row g-0">
+            <div class="col-12">
+                <div class="trend-content animate__animated animate__fadeInUp">
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <iframe 
+                                src="/trend/dash/"
+                                id="trend-frame"
+                                class="trend-iframe"
+                                frameborder="0"
+                            ></iframe>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/trend.css') }}">
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="{{ url_for('static', filename='js/trend.js') }}" defer></script>
 {% endblock %}
